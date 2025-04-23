@@ -1,0 +1,29 @@
+name: Build mercury
+
+on: [pull_request, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: gentoo/stage3:latest
+
+    steps:
+      - name: Checkout mercury sources
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          export FEATURES="-network-sandbox -ipc-sandbox -mount-sandbox" # docker
+
+          emerge-webrsync -q
+          getuto
+          emerge -qgn app-admin/setools sys-apps/policycoreutils sys-apps/secilc
+
+      - name: Generate configure script
+        run: autoreconf --install
+
+      - name: Configure mercury
+        run: ./configure --with-polvers=33 # CI runner kernel version not new enough
+
+      - name: Build monolithic policy
+        run: make
