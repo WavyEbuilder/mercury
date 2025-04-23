@@ -189,7 +189,4 @@
     (filecon "/sys/kernel/tracing" dir ())
     (filecon "/sys/kernel/tracing/.*" any ()))
 
-(typealias dpkg_script_t)
-(in sys (typealiasactual dpkg_script_t subj))
-
 (boolean xserver_object_manager false)
