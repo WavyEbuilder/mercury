@@ -7,30 +7,6 @@
 
     (allow fs self (filesystem (associate))))
 
-(in sys.hugetlbfs
-
-    (macro hugetlb_fs_type_transition_file ((type ARG1)(name ARG2))
-	   (call .hugetlb.fs_type_transition
-		 (ARG1 file file ARG2))))
-
-(in sys.mqueuefs
-
-    (macro mqueue_fs_type_transition_file ((type ARG1)(name ARG2))
-	   (call .mqueue.fs_type_transition
-		 (ARG1 file file ARG2))))
-
-(in sys.tmp
-
-    (macro tmp_file_type_transition_file ((type ARG1)(class ARG2)(name ARG3))
-	   (call .tmp.file_type_transition
-		 (ARG1 file ARG2 ARG3))))
-
-(in sys.tmpfs
-
-    (macro tmp_fs_type_transition_file ((type ARG1)(class ARG2)(name ARG3))
-	   (call .tmp.fs_type_transition
-		 (ARG1 file ARG2 ARG3))))
-
 (in sys.unconfined
 
     (allow typeattr subj (system (reboot reload start status stop))))

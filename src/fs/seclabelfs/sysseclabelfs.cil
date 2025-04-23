@@ -35,24 +35,6 @@
 
     (allow fs self (filesystem (associate)))
 
-    (call hugetlbfs.hugetlb_fs_type_transition_file (subj "*"))
-
-    (call mqueuefs.mqueue_fs_type_transition_file (subj "*"))
-
-    (call tmp.tmp_file_type_transition_file (subj dir "*"))
-    (call tmp.tmp_file_type_transition_file (subj fifo_file "*"))
-    (call tmp.tmp_file_type_transition_file (subj file "*"))
-    (call tmp.tmp_file_type_transition_file (subj lnk_file "*"))
-    (call tmp.tmp_file_type_transition_file (subj sock_file "*"))
-
-    (call tmpfs.tmp_fs_type_transition_file (subj dir "*"))
-    (call tmpfs.tmp_fs_type_transition_file (subj fifo_file "*"))
-    (call tmpfs.tmp_fs_type_transition_file (subj file "*"))
-    (call tmpfs.tmp_fs_type_transition_file (subj lnk_file "*"))
-    (call tmpfs.tmp_fs_type_transition_file (subj sock_file "*"))
-
-    (call .tmp.sys_tmp_file_type_transition_file (subj))
-
     (call .xattr.associate_fs (fs))
 
     (block getattr_fs_pattern
