@@ -1,0 +1,9 @@
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/debian export-ignore
+/mkosi.conf export-ignore
+/mkosi.prepare.chroot export-ignore
+/README.md export-ignore
+* text=auto
+*.cil linguist-detectable=true
+*.cil whitespace=trailing-space

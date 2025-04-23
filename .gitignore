@@ -1,0 +1,9 @@
+*~
+\#*\#
+
+/policy.*
+/file_contexts
+
+/mkosi.*
+!/mkosi.conf
+!/mkosi.prepare.chroot
