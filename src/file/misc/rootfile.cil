@@ -6,6 +6,9 @@
   (filecon "/" dir file_context)
   (filecon "/[^/]+" symlink file_context)
 
+  (filecon "/usr/bin" symlink file_context)
+  (filecon "/usr/lib" symlink file_context)
+
   (macro auditreadaccess_file_dirs ((type ARG1))
          (allow ARG1 file (dir (getattr read))))
 
