@@ -55,6 +55,68 @@
       (call read_file_lnk_files (typeattr))
       (call search_file_pattern.type (typeattr))))
 
+  (block credstore
+
+    (block conf
+
+      (filecon "/etc/credstore" dir file_context)
+      (filecon "/etc/credstore/.*" any file_context)
+
+      (filecon "/etc/credstore\.encrypted" dir file_context)
+      (filecon "/etc/credstore\.encrypted/.*" any file_context)
+
+      (macro conf_file_type_transition_file ((type ARG1))
+             (call .conf.file_type_transition
+                   (ARG1 file dir "credstore"))
+             (call .conf.file_type_transition
+                   (ARG1 file dir "credstore.encrypted")))
+
+      (blockinherit .file.conf.systemd.base_template)
+      (blockinherit .file.macro_template_dirs)
+      (blockinherit .file.macro_template_files)
+
+      (call .file.exception.type (file)))
+
+    (block data
+
+      (filecon "/usr/lib/credstore" dir file_context)
+      (filecon "/usr/lib/credstore/.*" any file_context)
+
+      (filecon "/usr/lib/credstore\.encrypted" dir file_context)
+      (filecon "/usr/lib/credstore\.encrypted/.*" any file_context)
+
+      (macro lib_file_type_transition_file ((type ARG1))
+             (call .lib.file_type_transition
+                   (ARG1 file dir "credstore"))
+             (call .lib.file_type_transition
+                   (ARG1 file dir "credstore.encrypted")))
+
+      (blockinherit .file.data.systemd.base_template)
+      (blockinherit .file.macro_template_dirs)
+      (blockinherit .file.macro_template_files)
+
+      (call .file.exception.type (file)))
+
+    (block run
+
+      (filecon "/run/credstore" dir file_context)
+      (filecon "/run/credstore/.*" any file_context)
+
+      (filecon "/run/credstore\.encrypted" dir file_context)
+      (filecon "/run/credstore\.encrypted/.*" any file_context)
+
+      (macro run_file_type_transition_file ((type ARG1))
+             (call .run.file_type_transition
+                   (ARG1 file dir "credstore"))
+             (call .run.file_type_transition
+                   (ARG1 file dir "credstore.encrypted")))
+
+      (blockinherit .file.macro_template_dirs)
+      (blockinherit .file.macro_template_files)
+      (blockinherit .file.run.systemd.base_template)
+
+      (call .file.exception.type (file))))
+
   (block data
 
     (filecon "/usr/lib/systemd/system\.conf\.d" dir file_context)
@@ -492,6 +554,9 @@
 (in file.unconfined
 
     (call .systemd.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.credstore.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.credstore.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.credstore.run.run_file_type_transition_file (typeattr))
     (call .systemd.data.data_file_type_transition_file (typeattr))
     (call .systemd.data.lib_file_type_transition_file (typeattr))
     (call .systemd.run.run_file_type_transition_file (typeattr))
