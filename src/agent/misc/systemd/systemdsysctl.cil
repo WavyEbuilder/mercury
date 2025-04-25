@@ -1,0 +1,19 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in systemd
+
+    (block sysctl
+
+      (blockinherit .sys.agent.template)
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/systemd-sysctl\.service.*" file
+                 file_context)
+
+        (blockinherit .file.unit.template))))
+
+(in after systemd.sysctl.exec
+
+    (filecon "/usr/lib/systemd/systemd-sysctl" file file_context))
