@@ -48,7 +48,7 @@
 
 	(blockinherit .agent.template)
 
-	(call exec.subj_type_transition (.systemd.subj subj))
+	(call subj_type_transition (.systemd.subj))
 
 	(call .sys.agent.exec.type (exec.file))
 	(call .sys.agent.type (subj)))))
