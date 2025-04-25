@@ -91,6 +91,16 @@
       (blockinherit .file.macro_template_files)
       (blockinherit .file.state.systemd.base_template)))
 
+  (block forked
+
+    (macro type ((type ARG1))
+           (typeattributeset typeattr ARG1))
+
+    (typeattribute typeattr)
+
+    ;; For logging stdout to journal
+    (call readwrite_subj_unix_stream_sockets (typeattr)))
+
   (block logparseenv
 
     (macro type ((type ARG1))
@@ -501,6 +511,10 @@
           (typeattr dir "system.control"))
     (call .systemd.unit.run.systemd_run_file_type_transition_file
           (typeattr dir "transient")))
+
+(in sys.agent
+
+    (call .systemd.forked.type (typeattr)))
 
 (in after systemd.exec
 
