@@ -7,8 +7,8 @@
   (filecon "/var/cache/.*" any file_context)
 
   (macro var_file_type_transition_file ((type ARG1))
-	   (call .var.file_type_transition
-		 (ARG1 file dir "cache")))
+         (call .var.file_type_transition
+               (ARG1 file dir "cache")))
 
   (blockinherit .file.cache.template)
 
