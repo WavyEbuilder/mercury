@@ -113,6 +113,25 @@
 
           (call .log.search_file_pattern.type (typeattr))))
 
+      (block relay_msgs
+
+        (macro type ((type ARG1))
+               (typeattributeset typeattr ARG1))
+
+        (typeattribute typeattr)
+
+        (dontaudit typeattr self (capability (net_admin)))
+
+        (call sendto_subj_unix_dgram_sockets (typeattr))
+
+        (call run.search_file_dirs (typeattr))
+        (call run.write_file_sock_files (typeattr))
+
+        (call systemd.run.search_file_pattern.type (typeattr))
+
+        (call .console.dontaudit_writeinherited_serialtermdev_chr_files
+              (typeattr)))
+
       (block run
 
         (filecon "/run/systemd/journal" dir file_context)
