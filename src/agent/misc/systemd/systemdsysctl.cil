@@ -23,6 +23,9 @@
 
       (call .sysctl.search_procfile_pattern.type (subj))
 
+      (call .sysctlfile.list_all_dirs (subj))
+      (call .sysctlfile.readwrite_all_files (subj))
+
       (block unit
 
         (filecon "/usr/lib/systemd/system/systemd-sysctl\.service.*" file
