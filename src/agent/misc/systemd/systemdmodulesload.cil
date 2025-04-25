@@ -1,0 +1,69 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in file.unconfined
+
+    (call .systemd.modulesload.conf.conf_file_type_transition_file (typeattr))
+    (call .systemd.modulesload.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.modulesload.run.run_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block modulesload
+
+      (blockinherit .sys.agent.template)
+
+      (call .unconfined.type (subj))
+
+      (block conf
+
+        (filecon "/etc/modules" file file_context)
+        (filecon "/etc/modules\..*" file file_context)
+
+        (filecon "/etc/modules-load\.d" dir file_context)
+        (filecon "/etc/modules-load\.d/.*" any file_context)
+
+        (macro conf_file_type_transition_file ((type ARG1))
+               (call .conf.file_type_transition
+                     (ARG1 file dir "modules-load.d"))
+               (call .conf.file_type_transition
+                     (ARG1 file file "modules")))
+
+        (blockinherit .file.conf.template))
+
+      (block data
+
+        (filecon "/usr/lib/modules-load\.d" dir file_context)
+        (filecon "/usr/lib/modules-load\.d/.*" any file_context)
+
+        (macro lib_file_type_transition_file ((type ARG1))
+               (call .lib.file_type_transition
+                     (ARG1 file dir "modules-load.d")))
+
+        (blockinherit .file.data.base_template)
+        (blockinherit .file.macro_template_dirs)
+        (blockinherit .file.macro_template_files))
+
+      (block run
+
+        (filecon "/run/modules-load\.d" dir file_context)
+        (filecon "/run/modules-load\.d/.*" any file_context)
+
+        (macro run_file_type_transition_file ((type ARG1))
+               (call .run.file_type_transition
+                     (ARG1 file dir "modules-load.d")))
+
+        (blockinherit .file.macro_template_dirs)
+        (blockinherit .file.macro_template_files)
+        (blockinherit .file.run.base_template))
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/systemd-modules-load\.service.*"
+                 file file_context)
+
+        (blockinherit .file.unit.template))))
+
+(in after systemd.modulesload.exec
+
+    (filecon "/usr/lib/systemd/systemd-modules-load" file file_context))
