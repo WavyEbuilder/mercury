@@ -20,6 +20,10 @@
 
   (call .cmdline.read_procfile_pattern.type (subj))
 
+  (call .computeav_selinux_security (subj))
+
+  (call .computecreate_selinux_security (subj))
+
   ;; mount units
   (call .mount.mountpoint.list_all_dirs (subj))
   (call .mount.mountpoint.mounton_all_dirs (subj))
