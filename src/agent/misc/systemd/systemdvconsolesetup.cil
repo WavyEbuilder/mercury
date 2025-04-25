@@ -1,0 +1,36 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in file.unconfined
+
+    (call .systemd.vconsolesetup.conf.conf_file_type_transition_file (typeattr)))
+
+(in systemd
+
+    (block vconsolesetup
+
+      (blockinherit .sys.agent.template)
+
+      (call .unconfined.type (subj))
+
+      (block conf
+
+        (filecon "/etc/vconsole\.conf" file file_context)
+        (filecon "/etc/vconsole\.conf\..*" file file_context)
+
+        (macro conf_file_type_transition_file ((type ARG1))
+               (call .conf.file_type_transition
+                     (ARG1 file dir "vconsole.conf")))
+
+        (blockinherit .file.conf.template))
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/systemd-vconsole-setup\.service.*"
+                 file file_context)
+
+        (blockinherit .file.unit.template))))
+
+(in after systemd.vconsolesetup.exec
+
+    (filecon "/usr/lib/systemd/systemd-vconsole-setup" file file_context))
