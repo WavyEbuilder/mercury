@@ -23,6 +23,8 @@
   ;; systemd writes to /dev/watchdog on shutdown
   (call .watchdog.readwrite_nodedev_chr_files (subj))
 
+  (allow subj self (user_namespace (create)))
+
   (block conf
 
     (filecon "/etc/systemd" dir file_context)
