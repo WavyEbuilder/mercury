@@ -7,6 +7,8 @@
 
       (blockinherit .sys.agent.template)
 
+      (call systemd.journal.relay_msgs.type (subj))
+
       (block unit
 
         (filecon "/usr/lib/systemd/system/systemd-sysctl\.service.*" file
