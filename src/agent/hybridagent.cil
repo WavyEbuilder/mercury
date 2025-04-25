@@ -1,0 +1,41 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+;; For agents that operate in both a system and user context
+
+(block hybrid
+
+  (call .sys.agent.exec.type (agent.exec.typeattr))
+  (call .sys.agent.type (agent.typeattr))
+
+  (call .user.agent.exec.type (agent.exec.typeattr))
+  (call .user.agent.type (agent.typeattr))
+
+  (block agent
+
+    (typeattribute typeattr)
+
+    (blockinherit .subj.all_macro_template)
+
+    (macro type ((type ARG1))
+           (typeattributeset typeattr ARG1))
+
+    (block exec
+
+      (typeattribute typeattr)
+
+      (blockinherit .file.all_macro_template_files)
+
+      (macro type ((type ARG1))
+             (typeattributeset typeattr ARG1)))
+
+    (block template
+
+      (blockabstract template)
+
+      (blockinherit .user.agent.template)
+
+      (call subj_type_transition (.sys.subj))
+
+      (call .hybrid.agent.exec.type (exec.file))
+      (call .hybrid.agent.type (subj)))))

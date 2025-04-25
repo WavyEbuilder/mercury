@@ -1,0 +1,58 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in user
+
+    (block agent
+
+      (macro type ((type ARG1))
+	     (typeattributeset typeattr ARG1))
+
+      (blockinherit .subj.all_macro_template)
+
+      (typeattribute typeattr)
+
+      (call .agent.type (typeattr))
+
+      (call .auto.getattr_fs_dirs (typeattr))
+
+      (block client
+
+	(macro type ((type ARG1))
+	       (typeattributeset typeattr ARG1))
+
+	(typeattribute typeattr))
+
+      (block exec
+
+	(macro auditexecuteaccess_all_files ((type ARG1))
+	       (allow ARG1 typeattr (file (getattr execute))))
+
+	(macro entrypoint_all_files ((type ARG1))
+	       (allow ARG1 typeattr (file (entrypoint))))
+
+	(macro getattr_all_files ((type ARG1))
+	       (allow ARG1 typeattr (file (getattr))))
+
+	(macro map_all_files ((type ARG1))
+	       (allow ARG1 typeattr (file (map))))
+
+	(macro type ((type ARG1))
+	       (typeattributeset typeattr ARG1))
+
+	(blockinherit .file.all_macro_template_files)
+
+	(typeattribute typeattr)
+
+	(call .agent.exec.type (typeattr)))
+
+      (block template
+
+	(blockabstract template)
+
+	(blockinherit .agent.template)
+
+	(call subj_type_transition (.user.agent.client.typeattr))
+
+	(call .user.agent.exec.type (exec.file))
+	(call .user.agent.type (subj)))))
