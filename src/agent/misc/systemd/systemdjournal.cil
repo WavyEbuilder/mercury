@@ -1,0 +1,190 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in systemd
+
+    (block journal
+
+      (blockinherit .sys.agent.template)
+
+      (call .unconfined.type (subj))
+
+      (block conf
+
+        (filecon "/etc/systemd/journald@.*\.conf" file file_context)
+        (filecon "/etc/systemd/journald@.*\.conf\..*" file file_context)
+        (filecon "/etc/systemd/journald@.*\.conf\.d" dir file_context)
+        (filecon "/etc/systemd/journald@.*\.conf\.d/.*" any file_context)
+
+        (filecon "/etc/systemd/journald\.conf" file file_context)
+        (filecon "/etc/systemd/journald\.conf\..*" file file_context)
+        (filecon "/etc/systemd/journald\.conf\.d" dir file_context)
+        (filecon "/etc/systemd/journald\.conf\.d/.*" any file_context)
+
+        (macro systemd_conf_file_type_transition_file ((type ARG1))
+               (call .systemd.conf.file_type_transition
+                     (ARG1 file dir "journald.conf.d"))
+               (call .systemd.conf.file_type_transition
+                     (ARG1 file file "journald.conf")))
+
+        (blockinherit .file.conf.systemd.template))
+
+      (block data
+
+        (filecon "/usr/lib/systemd/journald@.*\.conf" file file_context)
+        (filecon "/usr/lib/systemd/journald@.*\.conf\..*" file file_context)
+        (filecon "/usr/lib/systemd/journald@.*\.conf\.d" dir file_context)
+        (filecon "/usr/lib/systemd/journald@.*\.conf\.d/.*" any file_context)
+
+        (filecon "/usr/lib/systemd/journald\.conf" file file_context)
+        (filecon "/usr/lib/systemd/journald\.conf\..*" file file_context)
+        (filecon "/usr/lib/systemd/journald\.conf\.d" dir file_context)
+        (filecon "/usr/lib/systemd/journald\.conf\.d/.*" any file_context)
+
+        (macro lib_file_type_transition_file ((type ARG1))
+               (call .lib.file_type_transition
+                     (ARG1 file dir "journald.conf.d"))
+               (call .lib.file_type_transition
+                     (ARG1 file file "journald.conf")))
+
+        (blockinherit .file.data.systemd.base_template)
+        (blockinherit .file.macro_template_dirs)
+        (blockinherit .file.macro_template_files))
+
+      (block log
+
+        (filecon "/run/log" dir file_context)
+        (filecon "/run/log/.*" dir file_context)
+        (filecon "/run/log/.*/system.*\.journal.*" file file_context)
+        (filecon "/run/log/.*" file ())
+
+        (filecon "/var/log/journal" dir file_context)
+        (filecon "/var/log/journal/.*" dir file_context)
+        (filecon "/var/log/journal/.*/system.*\.journal.*" file file_context)
+        (filecon "/var/log/journal/.*/user.*\.journal.*" file file_context)
+        (filecon "/var/log/journal/.*\..*/system.*\.journal.*" file ())
+
+        (macro log_file_type_transition_file ((type ARG1))
+               (call .log.file_type_transition
+                     (ARG1 file dir "journal")))
+
+        (macro map_file_files ((type ARG1))
+               (allow ARG1 file (file (map))))
+
+        (macro run_file_type_transition_file ((type ARG1))
+               (call .run.file_type_transition
+                     (ARG1 file dir "log")))
+
+        (macro watch_file_dirs ((type ARG1))
+               (allow ARG1 file (dir (watch))))
+
+        (blockinherit .file.macro_template_dirs)
+        (blockinherit .file.macro_template_files)
+        (blockinherit .file.macro_template_lnk_files)
+        (blockinherit .file.log.base_template)
+
+        (call .mount.mountpoint.type (file))
+
+        (call .rbacsep.exempt.obj.type (file))
+
+        (call .tmp.associate_fs (file))
+
+        (block map_file_pattern
+
+          (macro type ((type ARG1))
+                 (typeattributeset typeattr ARG1))
+
+          (typeattribute typeattr)
+
+          (call map_file_files (typeattr))
+
+          (call .log.search_file_pattern.type (typeattr)))
+
+        (block read_file_pattern
+
+          (macro type ((type ARG1))
+                 (typeattributeset typeattr ARG1))
+
+          (typeattribute typeattr)
+
+          (call list_file_dirs (typeattr))
+          (call read_file_files (typeattr))
+          (call read_file_lnk_files (typeattr))
+
+          (call .log.search_file_pattern.type (typeattr))))
+
+      (block run
+
+        (filecon "/run/systemd/journal" dir file_context)
+        (filecon "/run/systemd/journal/.*" any file_context)
+
+        (filecon "/run/systemd/journal\..*" dir file_context)
+        (filecon "/run/systemd/journal\..*/.*" any ())
+
+        (filecon "/run/systemd/journald@.*\.conf" file file_context)
+        (filecon "/run/systemd/journald@.*\.conf\..*" file file_context)
+        (filecon "/run/systemd/journald@.*\.conf\.d" dir file_context)
+        (filecon "/run/systemd/journald@.*\.conf\.d/.*" any file_context)
+
+        (filecon "/run/systemd/journald\.conf" file file_context)
+        (filecon "/run/systemd/journald\.conf\..*" file file_context)
+        (filecon "/run/systemd/journald\.conf\.d" dir file_context)
+        (filecon "/run/systemd/journald\.conf\.d/.*" any file_context)
+
+        (macro map_file_files ((type ARG1))
+               (allow ARG1 file (file (map))))
+
+        (macro systemd_run_file_type_transition_file
+               ((type ARG1)(class ARG2)(name ARG3))
+               (call .systemd.run.file_type_transition
+                     (ARG1 file ARG2 ARG3)))
+
+        (blockinherit .file.macro_template_files)
+        (blockinherit .file.run.systemd.template)
+
+        (call .rbacsep.exempt.obj.type (file)))
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/syslog\.socket.*" file file_context)
+        (filecon
+         "/usr/lib/systemd/system/systemd-journal-catalog-update\.service.*"
+         file file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald-audit\.socket.*"
+                 file file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald-dev-log\.socket.*"
+                 file file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald\.service.*" file
+                 file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald@.*\.service.*" file
+                 file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald\.socket.*" file
+                 file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald@.*\.socket.*" file
+                 file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald-sync@.*\.service.*"
+                 file file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journald-varlink@.*\.socket.*"
+                 file file_context)
+        (filecon "/usr/lib/systemd/system/systemd-journal-flush\.service.*" file
+                 file_context)
+
+        (blockinherit .file.unit.template))))
+
+(in file.unconfined
+
+    (call .systemd.journal.conf.systemd_conf_file_type_transition_file
+          (typeattr))
+    (call .systemd.journal.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.journal.log.log_file_type_transition_file (typeattr))
+    (call .systemd.journal.log.run_file_type_transition_file (typeattr))
+    (call .systemd.journal.run.systemd_run_file_type_transition_file
+          (typeattr dir "journal"))
+    (call .systemd.journal.run.systemd_run_file_type_transition_file
+          (typeattr dir "journald.conf.d"))
+    (call .systemd.journal.run.systemd_run_file_type_transition_file
+          (typeattr file "journald.conf")))
+
+(in after systemd.journal.exec
+
+    (filecon "/usr/lib/systemd/systemd-journald" file file_context))
