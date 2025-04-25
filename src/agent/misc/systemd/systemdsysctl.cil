@@ -9,6 +9,20 @@
 
       (call systemd.journal.relay_msgs.type (subj))
 
+      (call .sysctl.conf.list_file_dirs (subj))
+      (call .sysctl.conf.read_file_files (subj))
+      (call .sysctl.conf.read_file_lnk_files (subj))
+
+      (call .sysctl.data.list_file_dirs (subj))
+      (call .sysctl.data.read_file_files (subj))
+      (call .sysctl.data.read_file_lnk_files (subj))
+
+      (call .sysctl.run.list_file_dirs (subj))
+      (call .sysctl.run.read_file_files (subj))
+      (call .sysctl.run.read_file_lnk_files (subj))
+
+      (call .sysctl.search_procfile_pattern.type (subj))
+
       (block unit
 
         (filecon "/usr/lib/systemd/system/systemd-sysctl\.service.*" file
