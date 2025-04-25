@@ -20,6 +20,9 @@
 
   (call .cmdline.read_procfile_pattern.type (subj))
 
+  ;; systemd writes to /dev/watchdog on shutdown
+  (call .watchdog.readwrite_nodedev_chr_files (subj))
+
   (block conf
 
     (filecon "/etc/systemd" dir file_context)
