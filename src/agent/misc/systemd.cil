@@ -1,6 +1,9 @@
 ;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
+(class service (reload start status stop))
+(classorder (unordered service))
+
 (block systemd
 
   (blockinherit .hybrid.agent.template)
