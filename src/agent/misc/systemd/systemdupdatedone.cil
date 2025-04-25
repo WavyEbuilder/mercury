@@ -1,0 +1,50 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in file.unconfined
+
+    (call .systemd.updatedone.updated.conf_file_type_transition_file (typeattr))
+    (call .systemd.updatedone.updated.var_file_type_transition_file
+          (typeattr)))
+
+(in systemd
+
+    (block updatedone
+
+      (blockinherit .sys.agent.template)
+
+      (call .unconfined.type (subj))
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/systemd-update-done\.service.*" file
+                 file_context)
+
+        (blockinherit .file.unit.template))
+
+      (block updated
+
+        (filecon "/etc/\.updated" file file_context)
+        (filecon "/etc/\.updated\..*" file file_context)
+
+        (filecon "/var/\.updated" file file_context)
+        (filecon "/var/\.updated\..*" file file_context)
+
+        (macro conf_file_type_transition_file ((type ARG1))
+               (call .conf.file_type_transition
+                     (ARG1 file file ".updated")))
+
+        (macro var_file_type_transition_file ((type ARG1))
+               (call .var.file_type_transition
+                     (ARG1 file file ".updated")))
+
+        (blockinherit .file.base_template)
+        (blockinherit .file.macro_template_files)
+
+        (call .file.conf.type (file))
+
+        (call .file.var.type (file)))))
+
+(in after systemd.updatedone.exec
+
+    (filecon "/usr/lib/systemd/systemd-update-done" file file_context))
