@@ -36,6 +36,7 @@
       (blockinherit .user.agent.template)
 
       (call subj_type_transition (.sys.subj))
+      (call subj_type_transition (.systemd.subj))
 
       (call .hybrid.agent.exec.type (exec.file))
       (call .hybrid.agent.type (subj)))))
