@@ -20,6 +20,10 @@
 
   (call .cmdline.read_procfile_pattern.type (subj))
 
+  ;; mount units
+  (call .mount.mountpoint.list_all_dirs (subj))
+  (call .mount.mountpoint.mounton_all_dirs (subj))
+
   ;; systemd writes to /dev/watchdog on shutdown
   (call .watchdog.readwrite_nodedev_chr_files (subj))
 
