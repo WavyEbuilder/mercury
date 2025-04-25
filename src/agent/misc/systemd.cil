@@ -19,6 +19,9 @@
   (call conf.read_file_files (subj))
 
   (call unit.list_file_dirs (subj))
+  ;; Not all system units are associated with the
+  ;; file.system.unit.typeattr typeattribute.
+  (call unit.read_file_files (subj))
   (call unit.read_file_lnk_files (subj))
   (call unit.run.manage_file_dirs (subj))
   (call unit.run.manage_file_files (subj))
