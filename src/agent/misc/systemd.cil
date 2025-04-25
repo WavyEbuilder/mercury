@@ -28,7 +28,10 @@
   (call .mount.mountpoint.list_all_dirs (subj))
   (call .mount.mountpoint.mounton_all_dirs (subj))
 
-  (call .selinux.linked.type (subj))
+  (call .selinux.file.read_file_pattern.type (subj))
+  (call .selinux.map_fs_files (subj))
+  (call .selinux.readwrite_fs_pattern.type (subj))
+  (call .selinux.remount_fs (subj))
 
   ;; systemd writes to /dev/watchdog on shutdown
   (call .watchdog.readwrite_nodedev_chr_files (subj))
