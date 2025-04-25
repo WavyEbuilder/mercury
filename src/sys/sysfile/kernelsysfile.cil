@@ -9,6 +9,9 @@
     (blockinherit .sysfile.macro_template_dirs)
     (blockinherit .sysfile.macro_template_lnk_files)
 
+    (optional kernelsysfile_mount
+              (call .mount.mountpoint.type (sysfile)))
+
     (block search_sysfile_pattern
 
       (macro type ((type ARG1))

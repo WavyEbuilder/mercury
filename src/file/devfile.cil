@@ -38,6 +38,9 @@
 
     (call .xattr.associate_fs (file))
 
+    (optional devfile_mount
+              (call .mount.mountpoint.type (file)))
+
     (block list_file_pattern
 
       (macro type ((type ARG1))

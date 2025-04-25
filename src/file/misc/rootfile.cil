@@ -27,6 +27,9 @@
 
   (call .xattr.associate_fs (file))
 
+  (optional rootfile_mount
+            (call .mount.mountpoint.type (file)))
+
   (block search_file_pattern
 
     (macro type ((type ARG1))

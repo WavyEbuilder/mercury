@@ -1,0 +1,32 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(block mount
+
+  (block mountpoint
+
+    (macro dontaudit_auditaccess_all_dirs ((type ARG1))
+           (dontaudit ARG1 typeattr (dir (audit_access))))
+
+    (macro dontaudit_getattr_all_dirs ((type ARG1))
+           (dontaudit ARG1 typeattr (dir (getattr))))
+
+    (macro auditwriteaccess_all_dirs ((type ARG1))
+           (allow ARG1 typeattr (dir (getattr write))))
+
+    (macro list_all_dirs ((type ARG1))
+           (allow ARG1 typeattr list_dir))
+
+    (macro mounton_all_dirs ((type ARG1))
+           (allow ARG1 typeattr mounton_dir))
+
+    (macro readwrite_all_dirs ((type ARG1))
+           (allow ARG1 typeattr readwrite_dir))
+
+    (macro search_all_dirs ((type ARG1))
+           (allow ARG1 typeattr search_dir))
+
+    (macro type ((type ARG1))
+           (typeattributeset typeattr ARG1))
+
+    (typeattribute typeattr)))

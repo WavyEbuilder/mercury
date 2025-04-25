@@ -14,6 +14,9 @@
 
   (call .root.associate_fs (file))
 
+  (optional cachefile_mount
+            (call .mount.mountpoint.type (file)))
+
   (block search_file_pattern
 
     (macro type ((type ARG1))
