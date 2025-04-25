@@ -33,6 +33,10 @@
   (call .selinux.readwrite_fs_pattern.type (subj))
   (call .selinux.remount_fs (subj))
 
+  ;; systemd delegates system.slice
+  (call .sys.slice.manage_cgroupfile_dirs (subj))
+  (call .sys.slice.manage_cgroupfile_files (subj))
+
   ;; systemd writes to /dev/watchdog on shutdown
   (call .watchdog.readwrite_nodedev_chr_files (subj))
 
