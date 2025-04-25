@@ -1,0 +1,76 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in systemd
+
+    (block login
+
+      (blockinherit .sys.agent.template)
+
+      (call .unconfined.type (subj))
+
+      (block conf
+
+        (filecon "/etc/systemd/logind\.conf" file file_context)
+        (filecon "/etc/systemd/logind\.conf\..*" file file_context)
+        (filecon "/etc/systemd/logind\.conf\.d" dir file_context)
+        (filecon "/etc/systemd/logind\.conf\.d/.*" any file_context)
+
+        (macro systemd_conf_file_type_transition_file ((type ARG1))
+               (call .systemd.conf.file_type_transition
+                     (ARG1 file dir "logind.conf.d"))
+               (call .systemd.conf.file_type_transition
+                     (ARG1 file file "logind.conf")))
+
+        (blockinherit .file.conf.systemd.template))
+
+      (block data
+
+        (filecon "/usr/lib/systemd/logind\.conf" file file_context)
+        (filecon "/usr/lib/systemd/logind\.conf\..*" file file_context)
+        (filecon "/usr/lib/systemd/logind\.conf\.d" dir file_context)
+        (filecon "/usr/lib/systemd/logind\.conf\.d/.*" any file_context)
+
+        (macro lib_file_type_transition_file ((type ARG1))
+               (call .lib.file_type_transition
+                     (ARG1 file dir "logind.conf.d"))
+               (call .lib.file_type_transition
+                     (ARG1 file file "logind.conf")))
+
+        (blockinherit .file.data.systemd.base_template)
+        (blockinherit .file.macro_template_dirs)
+        (blockinherit .file.macro_template_files))
+
+      (block run
+
+        (filecon "/run/systemd/logind\.conf" file file_context)
+        (filecon "/run/systemd/logind\.conf\..*" file file_context)
+        (filecon "/run/systemd/logind\.conf\.d" dir file_context)
+        (filecon "/run/systemd/logind\.conf\.d/.*" any file_context)
+
+        (macro systemd_run_file_type_transition_file ((type ARG1))
+               (call .systemd.run.file_type_transition
+                     (ARG1 file dir "logind.conf.d"))
+               (call .systemd.run.file_type_transition
+                     (ARG1 file file "logind.conf")))
+
+        (blockinherit .file.macro_template_dirs)
+        (blockinherit .file.macro_template_files)
+        (blockinherit .file.run.systemd.base_template))
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/systemd-logind\.service.*" file
+                 file_context)
+
+        (blockinherit .file.unit.template))))
+
+(in file.unconfined
+
+    (call .systemd.login.conf.systemd_conf_file_type_transition_file (typeattr))
+    (call .systemd.login.data.lib_file_type_transition_file (typeattr))
+    (call .systemd.login.run.systemd_run_file_type_transition_file (typeattr)))
+
+(in after systemd.login.exec
+
+    (filecon "/usr/lib/systemd/systemd-logind" file file_context))
