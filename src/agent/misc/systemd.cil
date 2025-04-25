@@ -99,7 +99,10 @@
     (typeattribute typeattr)
 
     ;; For logging stdout to journal
-    (call readwrite_subj_unix_stream_sockets (typeattr)))
+    (call readwrite_subj_unix_stream_sockets (typeattr))
+
+    ;; Redirect stdout to /dev/null
+    (allow typeattr subj (fd (use))))
 
   (block logparseenv
 
