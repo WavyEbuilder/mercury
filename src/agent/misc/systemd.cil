@@ -91,6 +91,20 @@
       (blockinherit .file.macro_template_files)
       (blockinherit .file.state.systemd.base_template)))
 
+  (block logparseenv
+
+    (macro type ((type ARG1))
+           (typeattributeset typeattr ARG1))
+
+    (typeattribute typeattr)
+
+    (dontaudit typeattr self (capability (net_admin sys_ptrace)))
+
+    (call .cmdline.read_procfile_pattern.type (typeattr))
+
+    ;; /proc/1/environ requires cap_sys_ptrace
+    (call read_subj_states (typeattr)))
+
   (block run
 
     (filecon "/run/systemd" dir file_context)
