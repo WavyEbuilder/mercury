@@ -9,6 +9,8 @@
 
       (call systemd.journal.relay_msgs.type (subj))
 
+      (call systemd.logparseenv.type (subj))
+
       (call .sysctl.conf.list_file_dirs (subj))
       (call .sysctl.conf.read_file_files (subj))
       (call .sysctl.conf.read_file_lnk_files (subj))
