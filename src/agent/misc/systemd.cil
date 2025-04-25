@@ -18,11 +18,33 @@
   (call conf.list_file_dirs (subj))
   (call conf.read_file_files (subj))
 
+  (call unit.list_file_dirs (subj))
+  (call unit.read_file_lnk_files (subj))
+  (call unit.run.manage_file_dirs (subj))
+  (call unit.run.manage_file_files (subj))
+  (call unit.run.manage_file_lnk_files (subj))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "generator"))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "generator.early"))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "generator.late"))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "system"))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "system.attached"))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "system.control"))
+  (call unit.run.systemd_run_file_type_transition_file
+        (subj dir "transient"))
+
   (call .cmdline.read_procfile_pattern.type (subj))
 
   (call .computeav_selinux_security (subj))
 
   (call .computecreate_selinux_security (subj))
+
+  (call .file.system.unit.read_all_files (subj))
 
   ;; mount units
   (call .mount.mountpoint.list_all_dirs (subj))
@@ -369,7 +391,28 @@
         (macro type ((type ARG1))
                (typeattributeset typeattr ARG1))
 
-        (typeattribute typeattr)))
+        (blockinherit .file.all_macro_template_files)
+        (blockinherit .file.unit.all_macro_template_services)
+
+        (typeattribute typeattr)
+
+        (call .file.unit.type (typeattr))
+
+        (block base_template
+
+          (blockabstract base_template)
+
+          (blockinherit .file.unit.base_template)
+
+          (call .file.system.unit.type (file)))
+
+        (block template
+
+          (blockabstract template)
+
+          (blockinherit .file.macro_template_files)
+          (blockinherit .file.unit.macro_template_services)
+          (blockinherit .file.system.unit.base_template))))
 
     (block unit
 
