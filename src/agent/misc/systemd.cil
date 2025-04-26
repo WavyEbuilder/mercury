@@ -64,6 +64,7 @@
   ;; systemd writes to /dev/watchdog on shutdown
   (call .watchdog.readwrite_nodedev_chr_files (subj))
 
+  (allow subj self (bpf (map_create map_read map_write prog_load prog_run)))
   (allow subj self (capability2 (audit_read)))
   (allow subj self (key (search setattr write)))
   (allow subj self (user_namespace (create)))
