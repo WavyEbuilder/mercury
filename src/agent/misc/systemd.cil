@@ -18,6 +18,8 @@
   (call conf.list_file_dirs (subj))
   (call conf.read_file_files (subj))
 
+  (call dynamicuser.type (subj))
+
   (call executor.exec.execute_file_files (subj))
 
   (call unit.list_file_dirs (subj))
@@ -51,9 +53,6 @@
   ;; mount units
   (call .mount.mountpoint.list_all_dirs (subj))
   (call .mount.mountpoint.mounton_all_dirs (subj))
-
-  ;; systemd-dynamicuser
-  (call .nss.passwdgroup.type (subj))
 
   (call .selinux.file.read_file_pattern.type (subj))
   (call .selinux.map_fs_files (subj))
@@ -188,6 +187,25 @@
     (blockinherit .file.data.systemd.base_template)
     (blockinherit .file.macro_template_dirs)
     (blockinherit .file.macro_template_files))
+
+  (block dynamicuser
+
+    (macro type ((type ARG1))
+           (typeattributeset typeattr ARG1))
+
+    (typeattribute typeattr)
+
+    (dontaudit typeattr self (capability (net_admin)))
+
+    (call conf.getattr_file_files (typeattr))
+    (call conf.search_file_pattern.type (typeattr))
+
+    (call run.search_file_pattern.type (typeattr))
+
+    (call userdb.run.list_file_dirs (typeattr))
+    (call userdb.run.write_file_sock_files (typeattr))
+
+    (call .sys.connectto_subj_unix_stream_sockets (typeattr)))
 
   ;; RootEphemeral=true, systemd.exec(5)
   (block ephemeraltrees
@@ -395,6 +413,40 @@
              (call .systemd.run.file_type_transition
                    (ARG1 file file "systemd-units-load")))
 
+      (blockinherit .file.macro_template_files)
+      (blockinherit .file.run.systemd.base_template)))
+
+  (block userdb
+
+    (block run
+
+      (filecon "/run/systemd/userdb" dir file_context)
+      (filecon "/run/systemd/userdb/.*" any file_context)
+
+      (macro systemd_run_file_type_transition_file ((type ARG1))
+             (call .systemd.run.file_type_transition
+                   (ARG1 file dir "userdb")))
+
+      (blockinherit .file.macro_template_lnk_files)
+      (blockinherit .file.run.systemd.template)
+
+      (call .rbacsep.exempt.obj.type (file))))
+
+  (block users
+
+    (block run
+
+      (filecon "/run/systemd/users" dir file_context)
+      (filecon "/run/systemd/users/.*" any file_context)
+
+      (macro systemd_run_file_type_transition_file ((type ARG1))
+             (call .systemd.run.file_type_transition
+                   (ARG1 file dir "users")))
+
+      (macro watch_file_dirs ((type ARG1))
+             (allow ARG1 file (dir (watch))))
+
+      (blockinherit .file.macro_template_dirs)
       (blockinherit .file.macro_template_files)
       (blockinherit .file.run.systemd.base_template))))
 
@@ -665,7 +717,13 @@
     (call .systemd.unit.run.systemd_run_file_type_transition_file
           (typeattr dir "system.control"))
     (call .systemd.unit.run.systemd_run_file_type_transition_file
-          (typeattr dir "transient")))
+          (typeattr dir "transient"))
+    (call .systemd.userdb.run.systemd_run_file_type_transition_file (typeattr))
+    (call .systemd.users.run.systemd_run_file_type_transition_file (typeattr)))
+
+(in nss.passwdgroup
+
+    (call .systemd.dynamicuser.type (typeattr)))
 
 (in sys.agent
 
