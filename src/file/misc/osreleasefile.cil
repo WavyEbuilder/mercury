@@ -1,0 +1,30 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in osrelease
+
+    (filecon "/etc/gentoo-release" file file_context)
+    (filecon "/etc/initrd-release" file file_context)
+    (filecon "/etc/os-release" file file_context)
+
+    (filecon "/usr/lib/os-release" file file_context)
+
+    (macro conf_file_type_transition_file ((type ARG1))
+           (call .conf.file_type_transition
+                 (ARG1 file file "gentoo-release"))
+           (call .conf.file_type_transition
+                 (ARG1 file file "initrd-release"))
+           (call .conf.file_type_transition
+                 (ARG1 file file "os-release")))
+
+    (macro lib_file_type_transition_file ((type ARG1))
+           (call .lib.file_type_transition
+                 (ARG1 file file "os-release")))
+
+    (blockinherit .file.base_template)
+    (blockinherit .file.macro_template_files))
+
+(in file.unconfined
+
+    (call .osrelease.conf_file_type_transition_file (typeattr))
+    (call .osrelease.lib_file_type_transition_file (typeattr)))
