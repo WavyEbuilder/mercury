@@ -20,7 +20,7 @@
         (filecon "/usr/lib/systemd/system/systemd-update-done\.service.*" file
                  file_context)
 
-        (blockinherit .file.unit.template))
+        (blockinherit .file.system.unit.template))
 
       (block updated
 

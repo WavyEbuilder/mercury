@@ -69,7 +69,7 @@
         (filecon "/usr/lib/systemd/system/systemd-logind\.service.*" file
                  file_context)
 
-        (blockinherit .file.unit.template))))
+        (blockinherit .file.system.unit.template))))
 
 (in after systemd.login.exec
 

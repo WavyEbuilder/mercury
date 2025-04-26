@@ -21,9 +21,6 @@
   (call executor.exec.execute_file_files (subj))
 
   (call unit.list_file_dirs (subj))
-  ;; Not all system units are associated with the
-  ;; file.system.unit.typeattr typeattribute.
-  (call unit.read_file_files (subj))
   (call unit.read_file_lnk_files (subj))
   (call unit.run.manage_file_dirs (subj))
   (call unit.run.manage_file_files (subj))
@@ -313,11 +310,11 @@
 
     (blockinherit .file.macro_template_dirs)
     (blockinherit .file.macro_template_lnk_files)
-    (blockinherit .file.unit.template)
+    (blockinherit .file.system.unit.template)
 
     (block run
 
-      ;; Output dir for generators, systemd.generator(7)
+      ;; Output dir for system generators, systemd.generator(7)
       (filecon "/run/systemd/generator" dir file_context)
       (filecon "/run/systemd/generator/.*" any file_context)
       (filecon "/run/systemd/generator\.early" dir file_context)

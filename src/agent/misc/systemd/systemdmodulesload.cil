@@ -62,7 +62,7 @@
         (filecon "/usr/lib/systemd/system/systemd-modules-load\.service.*"
                  file file_context)
 
-        (blockinherit .file.unit.template))))
+        (blockinherit .file.system.unit.template))))
 
 (in after systemd.modulesload.exec
 

@@ -202,7 +202,7 @@
         (filecon "/usr/lib/systemd/system/systemd-journal-flush\.service.*" file
                  file_context)
 
-        (blockinherit .file.unit.template))))
+        (blockinherit .file.system.unit.template))))
 
 (in after systemd.journal.exec
 
