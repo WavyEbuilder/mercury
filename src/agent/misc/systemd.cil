@@ -18,6 +18,8 @@
   (call conf.list_file_dirs (subj))
   (call conf.read_file_files (subj))
 
+  (call executor.exec.execute_file_files (subj))
+
   (call unit.list_file_dirs (subj))
   ;; Not all system units are associated with the
   ;; file.system.unit.typeattr typeattribute.
@@ -202,6 +204,17 @@
       (blockinherit .file.macro_template_dirs)
       (blockinherit .file.macro_template_files)
       (blockinherit .file.state.systemd.base_template)))
+
+  (block executor
+
+    (block exec
+
+      (filecon "/usr/lib/systemd/systemd-executor" file file_context)
+
+      (macro execute_file_files ((type ARG1))
+             (allow ARG1 file execute_file))
+
+      (blockinherit .file.exec.base_template)))
 
   (block forked
 
