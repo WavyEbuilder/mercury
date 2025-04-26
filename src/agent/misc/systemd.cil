@@ -66,9 +66,16 @@
   ;; systemd writes to /dev/watchdog on shutdown
   (call .watchdog.readwrite_nodedev_chr_files (subj))
 
+  (allow subj self create_netlink_audit_socket)
+  (allow subj self create_netlink_netfilter_socket)
+  (allow subj self create_netlink_selinux_socket)
+  (allow subj self create_unix_stream_socket)
+
   (allow subj self (bpf (map_create map_read map_write prog_load prog_run)))
   (allow subj self (capability2 (audit_read)))
   (allow subj self (key (search setattr write)))
+  (allow subj self (netlink_audit_socket (nlmsg_relay)))
+  (allow subj self (unix_stream_socket (connectto)))
   (allow subj self (user_namespace (create)))
 
   (block conf
