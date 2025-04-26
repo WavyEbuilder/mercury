@@ -61,3 +61,8 @@
 
     (macro write_subj_keyrings ((type ARG1))
            (allow ARG1 subj (key (write)))))
+
+(in sys.user
+
+    (macro read_subj_keyrings ((type ARG1))
+           (allow ARG1 subj (key (read)))))
