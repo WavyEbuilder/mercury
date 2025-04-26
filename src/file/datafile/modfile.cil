@@ -15,7 +15,9 @@
 
   (blockinherit .file.macro_template_dirs)
   (blockinherit .file.macro_template_lnk_files)
-  (blockinherit .file.mod.template))
+  (blockinherit .file.mod.template)
+
+  (call .systemd.mountpoint.type (file)))
 
 (in file
 

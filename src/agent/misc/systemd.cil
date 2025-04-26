@@ -22,6 +22,8 @@
 
   (call executor.exec.execute_file_files (subj))
 
+  (call mountpoint.mounton_all_dirs (subj))
+
   (call unit.list_file_dirs (subj))
   (call unit.read_file_lnk_files (subj))
   (call unit.run.manage_file_dirs (subj))
@@ -49,10 +51,6 @@
   (call .computecreate_selinux_security (subj))
 
   (call .file.system.unit.read_all_files (subj))
-
-  ;; mount units
-  (call .mount.mountpoint.list_all_dirs (subj))
-  (call .mount.mountpoint.mounton_all_dirs (subj))
 
   (call .selinux.file.read_file_pattern.type (subj))
   (call .selinux.map_fs_files (subj))
@@ -272,6 +270,34 @@
     ;; /proc/1/environ requires cap_sys_ptrace
     (call read_subj_states (typeattr)))
 
+  (block mountpoint
+
+    (macro dontaudit_auditaccess_all_dirs ((type ARG1))
+           (dontaudit ARG1 typeattr (dir (audit_access))))
+
+    (macro dontaudit_getattr_all_dirs ((type ARG1))
+           (dontaudit ARG1 typeattr (dir (getattr))))
+
+    (macro auditwriteaccess_all_dirs ((type ARG1))
+           (allow ARG1 typeattr (dir (getattr write))))
+
+    (macro list_all_dirs ((type ARG1))
+           (allow ARG1 typeattr list_dir))
+
+    (macro mounton_all_dirs ((type ARG1))
+           (allow ARG1 typeattr mounton_dir))
+
+    (macro readwrite_all_dirs ((type ARG1))
+           (allow ARG1 typeattr readwrite_dir))
+
+    (macro search_all_dirs ((type ARG1))
+           (allow ARG1 typeattr search_dir))
+
+    (macro type ((type ARG1))
+           (typeattributeset typeattr ARG1))
+
+    (typeattribute typeattr))
+
   (block run
 
     (filecon "/run/systemd" dir file_context)
@@ -288,6 +314,8 @@
     (blockinherit .file.macro_template_files)
     (blockinherit .file.macro_template_lnk_files)
     (blockinherit .file.run.systemd.base_template)
+
+    (call mountpoint.type (file))
 
     (call .root.associate_fs (file))
 
@@ -312,6 +340,8 @@
                  (ARG1 file dir "systemd")))
 
     (blockinherit .file.state.systemd.template)
+
+    (call mountpoint.type (file))
 
     (call .root.associate_fs (file))
 
@@ -456,7 +486,9 @@
 
       (blockinherit .file.macro_template_dirs)
       (blockinherit .file.macro_template_files)
-      (blockinherit .file.run.systemd.base_template))))
+      (blockinherit .file.run.systemd.base_template)
+
+      (call mountpoint.type (file)))))
 
 (in file
 

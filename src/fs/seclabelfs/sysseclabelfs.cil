@@ -35,6 +35,8 @@
 
     (allow fs self (filesystem (associate)))
 
+    (call .systemd.mountpoint.type (fs))
+
     (call .xattr.associate_fs (fs))
 
     (block getattr_fs_pattern

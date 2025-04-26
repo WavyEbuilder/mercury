@@ -8,6 +8,8 @@
   (blockinherit .procfile.base_template)
   (blockinherit .procfile.macro_template_dirs)
 
+  (call .systemd.mountpoint.type (procfile))
+
   (block search_procfile_pattern
 
     (macro type ((type ARG1))

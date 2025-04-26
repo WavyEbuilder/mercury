@@ -24,6 +24,8 @@
   (blockinherit .fs.macro_template_lnk_files)
   (blockinherit .noseclabelfs.template)
 
+  (call .systemd.mountpoint.type (fs))
+
   (call .xattr.associate_fs (fs))
 
   (block getattr_fs_pattern

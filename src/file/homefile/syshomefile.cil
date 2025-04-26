@@ -38,6 +38,8 @@
       (blockinherit .file.macro_template_blk_files)
       (blockinherit .file.macro_template_chr_files)
 
+      (call .systemd.mountpoint.type (file))
+
       (block search_file_pattern
 
         (macro type ((type ARG1))

@@ -6,7 +6,9 @@
     (genfscon "proc" "/sys/fs" sysctlfile_context)
 
     (blockinherit .sysctlfile.fs.template)
-    (blockinherit .sysctlfile.macro_template_dirs))
+    (blockinherit .sysctlfile.macro_template_dirs)
+
+    (call .systemd.mountpoint.type (sysctlfile)))
 
 (in sysctlfile
 

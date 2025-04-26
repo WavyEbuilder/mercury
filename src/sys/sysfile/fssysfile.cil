@@ -9,6 +9,8 @@
     (blockinherit .sysfile.macro_template_dirs)
     (blockinherit .sysfile.macro_template_lnk_files)
 
+    (call .systemd.mountpoint.type (sysfile))
+
     (block search_sysfile_pattern
 
       (macro type ((type ARG1))

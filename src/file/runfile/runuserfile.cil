@@ -17,6 +17,8 @@
   (blockinherit .file.macro_template_lnk_files)
   (blockinherit .file.runuser.base_template)
 
+  (call .systemd.mountpoint.type (file))
+
   (block search_file_pattern
 
     (macro type ((type ARG1))

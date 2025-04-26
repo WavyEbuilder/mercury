@@ -6,4 +6,6 @@
   (genfscon "proc" "/acpi" procfile_context)
 
   (blockinherit .procfile.macro_template_dirs)
-  (blockinherit .procfile.template))
+  (blockinherit .procfile.template)
+
+  (call .systemd.mountpoint.type (procfile)))
