@@ -75,6 +75,7 @@
   (allow subj self (capability2 (audit_read)))
   (allow subj self (key (search setattr write)))
   (allow subj self (netlink_audit_socket (nlmsg_relay)))
+  (allow subj self (system (halt reboot reload status)))
   (allow subj self (unix_stream_socket (connectto)))
   (allow subj self (user_namespace (create)))
 
