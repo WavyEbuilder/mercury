@@ -1,0 +1,21 @@
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+
+(in systemd
+
+    (block updateutmp
+
+      (blockinherit .sys.agent.template)
+
+      (call .unconfined.type (subj))
+
+      (block unit
+
+        (filecon "/usr/lib/systemd/system/systemd-update-utmp\.service.*" file
+                 file_context)
+
+        (blockinherit .file.system.unit.template))))
+
+(in after systemd.updateutmp.exec
+
+    (filecon "/usr/lib/systemd/systemd-update-utmp" file file_context))
