@@ -76,11 +76,17 @@
 
     (block lib
 
+      (macro getattr_all_dirs ((type ARG1))
+             (allow ARG1 typeattr (dir (getattr))))
+
+      (macro getattr_all_files ((type ARG1))
+             (allow ARG1 typeattr (file (getattr))))
+
       (macro map_all_files ((type ARG1))
-	     (allow ARG1 typeattr (file (map))))
+             (allow ARG1 typeattr (file (map))))
 
       (macro type ((type ARG1))
-	     (typeattributeset typeattr ARG1))
+             (typeattributeset typeattr ARG1))
 
       (blockinherit file.all_macro_template_files)
 

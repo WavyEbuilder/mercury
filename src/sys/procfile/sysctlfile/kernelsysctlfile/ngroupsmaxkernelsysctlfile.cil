@@ -1,9 +1,9 @@
-;; SPDX-FileCopyrightText: © 2025 Dominick Grift <dominick.grift@defensec.nl>
-;; SPDX-License-Identifier: Unlicense
+;; SPDX-FileCopyrightText: © 2025 Rahul Sandhu <nvraxn@gmail.com>
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
-(block caplastcap
+(block ngroupsmax
 
-  (genfscon "proc" "/sys/kernel/cap_last_cap" sysctlfile_context)
+  (genfscon "proc" "/sys/kernel/ngroups_max" sysctlfile_context)
 
   (blockinherit .sysctlfile.kernel.template)
 
